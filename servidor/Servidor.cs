@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace servidor
 {
-    static class Servidor
+    public static class Servidor
     {
         /// <summary>
         /// Punto de entrada principal para la aplicación.
@@ -77,7 +77,7 @@ namespace servidor
                         stream.Write(missatge, 0, missatge.Length);
                         Console.WriteLine("Enviat: {0}", dades);
 
-                        //Tanca client
+                        //Tanca client. Allibera els recursos
                         client.Close();
 
                     }
@@ -92,7 +92,8 @@ namespace servidor
             }
             finally
             {
-                tcplisten.Close();
+                //Tanca servidor. Allibera els recursos
+                tcplisten.Stop();
             }
 
 
