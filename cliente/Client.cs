@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace cliente
 {
-    class Client : IDisposable
+    public class Client 
     {
         /// <summary>
         /// Punto de entrada principal para la aplicación.
@@ -29,34 +29,39 @@ namespace cliente
         {
             try
             {
-                //Crea un client
+                //Crea un client TCP
                 int port = 8118;
                 TcpClient client = new TcpClient(servidor, port);
 
-                //String --> Byte
-                Byte[] dades = System.Text.Encoding.ASCII.GetBytes(missatge);
+                // Enmmagatzema el missatge en un array de byte
+                // missatge String --> Byte[]
+                Byte[] buffer = System.Text.Encoding.ASCII.GetBytes(missatge);
 
                 //Fluxe de dades per comunicar-se amb servidor
                 NetworkStream stream = client.GetStream();
 
                 // Envia missatge
-                stream.Write(dades, 0, dades.Length);
+                stream.Write(buffer, 0, buffer.Length);
                 Console.WriteLine("Enviat: {0}", missatge);
 
-                // Receive the TcpServer.response.
+                // Resposta del servidor.
 
-                // Buffer to store the response bytes.
-                dades = new Byte[256];
+                // Reinicializem el buffer per desar la resposta.
+                // màxim de bytes que es llegiran -->256 
+                buffer = new Byte[256];
 
-                // String to store the response ASCII representation.
-                String responseData = String.Empty;
+                // String per la resposta.
+                String resposta = String.Empty;
 
-                // Read the first batch of the TcpServer response bytes.
-                Int32 bytes = stream.Read(dades, 0, dades.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(dades, 0, bytes);
-                Console.WriteLine("Received: {0}", responseData);
+                // Llegeix la resposta del servidor
+                //bytes indica el nombre total que es llegeixen al buffer
+                Int32 bytes = stream.Read(buffer, 0, buffer.Length);
 
-                // Close everything.
+                // resposta byte[] --> string
+                resposta = System.Text.Encoding.ASCII.GetString(buffer, 0, bytes);
+                Console.WriteLine("Received: {0}", resposta);
+
+                // Tancar
                 stream.Close();
                 client.Close();
 
